@@ -111,12 +111,24 @@ void processLine(std::string line, Program &program, EvalState &state, bool &sho
             error("SYNTAX ERROR");
         }
         Expression *exp = parseExp(scanner);
-        int value = exp->eval(state);
+        int value;
+        try {
+            value = exp->eval(state);
+        } catch (...) {
+            delete exp;
+            throw;
+        }
         state.setValue(var, value);
         delete exp;
     } else if (keyword == "PRINT") {
         Expression *exp = parseExp(scanner);
-        int value = exp->eval(state);
+        int value;
+        try {
+            value = exp->eval(state);
+        } catch (...) {
+            delete exp;
+            throw;
+        }
         std::cout << value << std::endl;
         delete exp;
     } else if (keyword == "INPUT") {
