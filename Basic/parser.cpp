@@ -38,11 +38,11 @@ Expression *readE(TokenScanner &scanner, int prec) {
     while (true) {
         token = scanner.nextToken();
         int newPrec = precedence(token);
-        if (newPrec <= prec) break;
+        if (newPrec <= prec || token == "=") break;
         Expression *rhs = readE(scanner, newPrec);
         exp = new CompoundExp(token, exp, rhs);
     }
-    scanner.saveToken(token);
+    if (!token.empty()) scanner.saveToken(token);
     return exp;
 }
 
@@ -75,7 +75,6 @@ Expression *readT(TokenScanner &scanner) {
  */
 
 int precedence(std::string token) {
-    if (token == "=") return 1;
     if (token == "+" || token == "-") return 2;
     if (token == "*" || token == "/") return 3;
     return 0;
